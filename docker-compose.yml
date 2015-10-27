@@ -1,12 +1,14 @@
-web:
-  image: php:5.6-apache
+web3:
+  build: .
   volumes:
     - ./upload/:/var/www/html/
   links:
     - mysql
 mysql:
   image: mysql
+  expose:
+    - 3306
   volumes:
     - ./data/mysql:/var/lib/mysql
   environment:
-    - MYSQL_ROOT_PASSWORD:123456
+    - MYSQL_ROOT_PASSWORD=123456
