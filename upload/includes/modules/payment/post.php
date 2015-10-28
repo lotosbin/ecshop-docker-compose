@@ -72,14 +72,15 @@ class post
      *
      * @return void
      */
-    function post()
-    {
-    }
 
     function __construct()
     {
         $this->post();
     }
+    function post()
+    {
+    }
+
 
     /**
      * 提交函数

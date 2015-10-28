@@ -1069,7 +1069,7 @@ class cls_template
             /* 将模板中所有library替换为链接 */
             $pattern     = '/<!--\s#BeginLibraryItem\s\"\/(.*?)\"\s-->.*?<!--\s#EndLibraryItem\s-->/s';
             $replacement = "'{include file='.strtolower('\\1'). '}'";
-            $source      = preg_replace_callback($pattern,function($r){return $replacement;}, $source);
+            $source      = preg_replace_callback($pattern,function($r){return "'{include file='.strtolower('" . $r[1] . "'). '}'";}, $source);
 
             /* 检查有无动态库文件，如果有为其赋值 */
             $dyna_libs = get_dyna_libs($GLOBALS['_CFG']['template'], $this->_current_file);
@@ -1092,7 +1092,7 @@ class cls_template
                         $lib_pattern = '/{include\sfile=(' . substr($lib_pattern, 1) . ')}/';
                         /* 修改$reg_content中的内容 */
                         $GLOBALS['libs'] = $libs;
-                        $reg_content = preg_replace_callback($lib_pattern, 'dyna_libs_replace', $reg_content);
+                        $reg_content = preg_replace_callback($lib_pattern, function($r){return dyna_libs_replace($r);}, $reg_content);
 
                         /* 用修改过的内容替换原来当前区域中内容 */
                         $source = preg_replace_callback($pattern, function($r){return $reg_content;}, $source);
@@ -1104,10 +1104,10 @@ class cls_template
             $source = preg_replace_callback('/<head>/i', function($r){return "<head>\r\n<meta name=\"Generator\" content=\"" . APPNAME .' ' . VERSION . "\" />";},  $source);
 
             /* 修正css路径 */
-            $source = preg_replace_callback('/(<link\shref=["|\'])(?:\.\/|\.\.\/)?(css\/)?([a-z0-9A-Z_]+\.css["|\']\srel=["|\']stylesheet["|\']\stype=["|\']text\/css["|\'])/i',function($r){return '\1' . $tmp_dir . '\2\3';}, $source);
+            $source = preg_replace_callback('/(<link\shref=["|\'])(?:\.\/|\.\.\/)?(css\/)?([a-z0-9A-Z_]+\.css["|\']\srel=["|\']stylesheet["|\']\stype=["|\']text\/css["|\'])/i',function($r){return $r[1] . $tmp_dir . $r[2] . $r[3];}, $source);
 
             /* 修正js目录下js的路径 */
-            $source = preg_replace_callback('/(<script\s(?:type|language)=["|\']text\/javascript["|\']\ssrc=["|\'])(?:\.\/|\.\.\/)?(js\/[a-z0-9A-Z_\-\.]+\.(?:js|vbs)["|\']><\/script>)/',function($r){return  '\1' . $tmp_dir . '\2';}, $source);
+            $source = preg_replace_callback('/(<script\s(?:type|language)=["|\']text\/javascript["|\']\ssrc=["|\'])(?:\.\/|\.\.\/)?(js\/[a-z0-9A-Z_\-\.]+\.(?:js|vbs)["|\']><\/script>)/',function($r){return  $r[1] . $tmp_dir . $r[2];}, $source);
 
             /* 更换编译模板的编码类型 */
             $source = preg_replace_callback('/<meta\shttp-equiv=["|\']Content-Type["|\']\scontent=["|\']text\/html;\scharset=(?:.*?)["|\'][^>]*?>\r?\n?/i', function($r){return '<meta http-equiv="Content-Type" content="text/html; charset=' . EC_CHARSET . '" />' . "\n";}, $source);
@@ -1145,7 +1145,14 @@ class cls_template
             '\1' . $tmp_dir . '\2',
             '\1'
             );
-        return preg_replace_callback($pattern,function($r){return $replace;}, $source);
+        $rr = $source;
+        $rr = preg_replace_callback($pattern[0],function($r){return $r[1];},$rr);
+        $rr = preg_replace_callback($pattern[1],function($r){return '';},$rr);
+        $rr = preg_replace_callback($pattern[2],function($r){return $r[1] . $r[2] . $r[3];},$rr);
+        $rr = preg_replace_callback($pattern[3],function($r){return $r[1] . $tmp_dir . $r[2];},$rr);
+        $rr = preg_replace_callback($pattern[4],function($r){return $r[1] . $tmp_dir . $r[2];},$rr);
+        $rr = preg_replace_callback($pattern[5],function($r){return $r[1];},$rr);
+        return $rr;
     }
 
     function insert_mod($name) // 处理动态内容

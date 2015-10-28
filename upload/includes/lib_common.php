@@ -937,7 +937,7 @@ function price_format($price, $change_price = true)
                 $price = number_format($price, 2, '.', '');
                 break;
             case 1: // 保留不为 0 的尾数
-                $price = preg_replace('/(.*)(\\.)([0-9]*?)0+$/', '\1\2\3', number_format($price, 2, '.', ''));
+                $price = preg_replace_callback('/(.*)(\\.)([0-9]*?)0+$/', function($r){return $r[1] . $r[2] . $r[3];}, number_format($price, 2, '.', ''));
 
                 if (substr($price, -1) == '.')
                 {

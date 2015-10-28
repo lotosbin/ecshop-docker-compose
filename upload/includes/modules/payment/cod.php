@@ -75,14 +75,15 @@ class cod
      *
      * @return void
      */
-    function cod()
-    {
-    }
 
     function __construct()
     {
         $this->cod();
     }
+    function cod()
+    {
+    }
+
 
     /**
      * 提交函数
