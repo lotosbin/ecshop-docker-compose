@@ -76,14 +76,14 @@ class tenpay
      *
      * @return void
      */
-    function tenpay()
-    {
-    }
-
     function __construct()
     {
         $this->tenpay();
     }
+    function tenpay()
+    {
+    }
+
 
     /**
      * 生成支付代码

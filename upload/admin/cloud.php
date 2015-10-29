@@ -35,7 +35,7 @@ $data['mysql_ver'] = $db->version();
 $data['shop_url'] = urlencode($ecs->url());
 $data['admin_url'] = urlencode($ecs->url().ADMIN_PATH);
 $data['sess_id'] = $GLOBALS['sess']->get_session_id();
-$data['stamp'] = mktime();
+$data['stamp'] = time();
 $data['ent_id'] = $_CFG['ent_id'];
 $data['ent_ac'] = $_CFG['ent_ac'];
 $data['ent_sign'] = $_CFG['ent_sign'];
@@ -84,7 +84,7 @@ if($act =='menu_api')
             make_json_result('0');
         }
     }
-    else 
+    else
     {
         make_json_result($api_data['content']);
     }
@@ -92,7 +92,7 @@ if($act =='menu_api')
 elseif($act == 'cloud_remind')
 {
     $api_data = read_static_cache('cloud_remind');
-    
+
     if($api_data === false || (isset($api_data['api_time']) && $api_data['api_time']<date('Ymd')) )
     {
         $t = new transport('-1',5);

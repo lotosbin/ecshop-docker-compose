@@ -12,7 +12,7 @@
  * $Author: liubo $
  * $Id: lib_installer.php 17217 2011-01-19 06:29:08Z liubo $
  */
-
+date_default_timezone_set("Asia/Shanghai");
 if (!defined('IN_ECS'))
 {
     die('Hacking attempt');
@@ -28,7 +28,8 @@ function get_gd_version()
 {
     include_once(ROOT_PATH . 'includes/cls_image.php');
 
-    return cls_image::gd_version();
+    $cls_gile = new cls_image();
+    return $cls_gile->gd_version();
 }
 
 /**

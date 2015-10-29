@@ -343,7 +343,8 @@ function gd_version()
 {
     include_once(ROOT_PATH . 'includes/cls_image.php');
 
-    return cls_image::gd_version();
+    $cls_gile =  new cls_image();
+    return $cls_gile->gd_version();
 }
 
 if (!function_exists('file_get_contents'))
@@ -820,7 +821,7 @@ function check_file_type($filename, $realname = '', $limit_ext_types = '')
             if ($extname == 'jpg' || $extname == 'jpeg' || $extname == 'gif' || $extname == 'png' || $extname == 'doc' ||
                 $extname == 'xls' || $extname == 'txt'  || $extname == 'zip' || $extname == 'rar' || $extname == 'ppt' ||
                 $extname == 'pdf' || $extname == 'rm'   || $extname == 'mid' || $extname == 'wav' || $extname == 'bmp' ||
-                $extname == 'swf' || $extname == 'chm'  || $extname == 'sql' || $extname == 'cert'|| $extname == 'pptx' || 
+                $extname == 'swf' || $extname == 'chm'  || $extname == 'sql' || $extname == 'cert'|| $extname == 'pptx' ||
                 $extname == 'xlsx' || $extname == 'docx')
             {
                 $format = $extname;

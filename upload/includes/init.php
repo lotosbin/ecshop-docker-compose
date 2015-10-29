@@ -201,7 +201,7 @@ if (!defined('INIT_NO_SMARTY'))
 if (!defined('INIT_NO_USERS'))
 {
     /* 会员信息 */
-    $user =& init_users();
+    $user = init_users();
 
     if (!isset($_SESSION['user_id']))
     {
@@ -287,7 +287,7 @@ if ((DEBUG_MODE & 1) == 1)
 }
 else
 {
-    error_reporting(E_ALL ^ (E_NOTICE | E_WARNING)); 
+    error_reporting(E_ALL ^ (E_NOTICE | E_WARNING));
 }
 if ((DEBUG_MODE & 4) == 4)
 {

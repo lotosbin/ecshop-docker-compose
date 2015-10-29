@@ -188,7 +188,7 @@ elseif ($_REQUEST['act'] == 'main')
     {
         $warning[] = $_LANG['remove_upgrade'];
     }
-    
+
     if (file_exists('../demo'))
     {
         $warning[] = $_LANG['remove_demo'];
@@ -297,7 +297,7 @@ elseif ($_REQUEST['act'] == 'main')
     clearstatcache();
 
     $smarty->assign('warning_arr', $warning);
-    
+
 
     /* 绠＄悊鍛樼暀瑷€淇℃伅 */
     $sql = 'SELECT message_id, sender_id, receiver_id, sent_time, readed, deleted, title, message, user_name ' .
@@ -321,7 +321,7 @@ elseif ($_REQUEST['act'] == 'main')
     ' FROM ' .$ecs->table('order_info') .
     " WHERE 1 " . order_query_sql('await_ship'));
     $status['await_ship']  = CS_AWAIT_SHIP;
-    
+
     /* 寰呬粯娆剧殑璁㈠崟锛 */
     $order['await_pay']    = $db->GetOne('SELECT COUNT(*)'.
     ' FROM ' .$ecs->table('order_info') .
@@ -338,7 +338,7 @@ elseif ($_REQUEST['act'] == 'main')
     " WHERE  shipping_status=" .SS_SHIPPED_PART);
     $status['shipped_part'] = OS_SHIPPED_PART;
 
-//    $today_start = mktime(0,0,0,date('m'),date('d'),date('Y'));
+//    $today_start = time(0,0,0,date('m'),date('d'),date('Y'));
     $order['stats']        = $db->getRow('SELECT COUNT(*) AS oCount, IFNULL(SUM(order_amount), 0) AS oAmount' .
     ' FROM ' .$ecs->table('order_info'));
 
@@ -393,7 +393,7 @@ elseif ($_REQUEST['act'] == 'main')
     /* 璁块棶缁熻?淇℃伅 */
     $today  = local_getdate();
     $sql    = 'SELECT COUNT(*) FROM ' .$ecs->table('stats').
-    ' WHERE access_time > ' . (mktime(0, 0, 0, $today['mon'], $today['mday'], $today['year']) - date('Z'));
+    ' WHERE access_time > ' . (time(0, 0, 0, $today['mon'], $today['mday'], $today['year']) - date('Z'));
 
     $today_visit = $db->GetOne($sql);
     $smarty->assign('today_visit', $today_visit);
@@ -525,13 +525,13 @@ elseif ($_REQUEST['act'] == 'main_api')
         $api_comment = $t->request('http://api.ecshop.com/checkver.php', $apiget);
         $api_str = $api_comment["body"];
         echo $api_str;
-        
-        $f=ROOT_PATH . 'data/config.php'; 
+
+        $f=ROOT_PATH . 'data/config.php';
         file_put_contents($f,str_replace("'API_TIME', '".API_TIME."'","'API_TIME', '".date('Y-m-d H:i:s',time())."'",file_get_contents($f)));
-        
+
         write_static_cache('api_str', $api_str);
     }
-    else 
+    else
     {
         echo $data;
     }
@@ -683,7 +683,7 @@ elseif ($_REQUEST['act'] == 'second')
     if(!empty($shipping))
     {
         $shop_add = read_modules('../includes/modules/shipping');
-        
+
         foreach ($shop_add as $val)
         {
             $mod_shop[] = $val['code'];
@@ -693,9 +693,9 @@ elseif ($_REQUEST['act'] == 'second')
         $set_modules = true;
         if(strpos($mod_shop,$shipping) === false)
         {
-            exit;   
+            exit;
         }
-        else 
+        else
         {
             include_once(ROOT_PATH . 'includes/modules/shipping/' . $shipping . '.php');
         }

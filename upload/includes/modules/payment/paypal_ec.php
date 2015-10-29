@@ -88,15 +88,15 @@ class paypal_ec
      *
      * @return void
      */
+    function __construct()
+    {
+        $this->paypal_ec();
+    }
     function paypal_ec()
     {
 
     }
 
-    function __construct()
-    {
-        $this->paypal_ec();
-    }
 
 
 
@@ -133,11 +133,11 @@ class paypal_ec
         {
             $ack = strtoupper($resArray["ACK"]);
         }
-        
+
         if (isset($resArray["TOKEN"]))
         {
             $token = urldecode($resArray["TOKEN"]);
-        }            
+        }
             $payPalURL = PAYPAL_URL.$token;
             $button = '<div style="text-align:center"><input type="button" onclick="window.open(\''.$payPalURL. '\')" value="' .$GLOBALS['_LANG']['pay_button']. '"/></div>';
 
@@ -176,7 +176,7 @@ class paypal_ec
             $nvpstr='&TOKEN='.$token.'&PAYERID='.$payerID.'&PAYMENTACTION='.$paymentType.'&AMT='.$paymentAmount.'&CURRENCYCODE='.$currCodeType.'&IPADDRESS='.$serverName ;
 
             $resArray=$this->hash_call("DoExpressCheckoutPayment",$nvpstr);
-            
+
             $ack = strtoupper($resArray["ACK"]);
             if($ack=="SUCCESS")
             {
@@ -225,7 +225,7 @@ class paypal_ec
         $response = curl_exec($ch);
 
         $nvpResArray=$this->deformatNVP($response);
-        
+
         $nvpReqArray=$this->deformatNVP($nvpreq);
 
         $_SESSION['nvpReqArray']=$nvpReqArray;

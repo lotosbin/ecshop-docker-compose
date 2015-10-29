@@ -64,10 +64,10 @@ function local_mktime($hour = NULL , $minute= NULL, $second = NULL,  $month = NU
     $timezone = isset($_SESSION['timezone']) ? $_SESSION['timezone'] : $GLOBALS['_CFG']['timezone'];
 
     /**
-    * $time = mktime($hour, $minute, $second, $month, $day, $year) - date('Z') + (date('Z') - $timezone * 3600)
-    * 先用mktime生成时间戳，再减去date('Z')转换为GMT时间，然后修正为用户自定义时间。以下是化简后结果
+    * $time = time($hour, $minute, $second, $month, $day, $year) - date('Z') + (date('Z') - $timezone * 3600)
+    * 先用time生成时间戳，再减去date('Z')转换为GMT时间，然后修正为用户自定义时间。以下是化简后结果
     **/
-    $time = mktime($hour, $minute, $second, $month, $day, $year) - $timezone * 3600;
+    $time = time($hour, $minute, $second, $month, $day, $year) - $timezone * 3600;
 
     return $time;
 }
@@ -133,8 +133,8 @@ function local_strtotime($str)
     $timezone = isset($_SESSION['timezone']) ? $_SESSION['timezone'] : $GLOBALS['_CFG']['timezone'];
 
     /**
-    * $time = mktime($hour, $minute, $second, $month, $day, $year) - date('Z') + (date('Z') - $timezone * 3600)
-    * 先用mktime生成时间戳，再减去date('Z')转换为GMT时间，然后修正为用户自定义时间。以下是化简后结果
+    * $time = time($hour, $minute, $second, $month, $day, $year) - date('Z') + (date('Z') - $timezone * 3600)
+    * 先用time生成时间戳，再减去date('Z')转换为GMT时间，然后修正为用户自定义时间。以下是化简后结果
     **/
     $time = strtotime($str) - $timezone * 3600;
 

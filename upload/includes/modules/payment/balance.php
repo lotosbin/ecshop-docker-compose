@@ -72,13 +72,13 @@ class balance
      *
      * @return void
      */
-    function balance()
-    {
-    }
-
     function __construct()
     {
         $this->balance();
+    }
+
+    function balance()
+    {
     }
 
     /**
