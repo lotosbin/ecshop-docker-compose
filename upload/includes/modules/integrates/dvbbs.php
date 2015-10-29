@@ -53,6 +53,10 @@ class dvbbs extends integrate
     var $cookie_prefix = '';
     var $authkey = '';
 
+    function __construct($cfg)
+    {
+        $this->dvbbs($cfg);
+    }
 
     /**
      *

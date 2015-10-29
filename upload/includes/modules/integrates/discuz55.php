@@ -53,6 +53,11 @@ class discuz55 extends integrate
     var $cookie_prefix = '';
     var $authkey = '';
 
+    function __construct($cfg)
+    {
+        $this->discuz55($cfg);
+    }
+
     /**
      *
      *

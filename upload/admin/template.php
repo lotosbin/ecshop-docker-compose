@@ -62,16 +62,15 @@ if ($_REQUEST['act'] == 'list')
         $sql .= " AND theme <> '".$tmp['code']."' ";
         $available_code[] = $tmp['code'];
     }
-    if($tmp_bak_dir = @opendir(ROOT_PATH . 'temp/backup/library/')){
-        while ($file = readdir($tmp_bak_dir))
+    $tmp_bak_dir = @opendir(ROOT_PATH . 'temp/backup/library/');
+    while ($file = readdir($tmp_bak_dir))
+    {
+        if ($file != '.' && $file != '..' && $file != '.svn' && $file != 'index.htm' && is_file(ROOT_PATH .'temp/backup/library/' . $file) == true)
         {
-            if ($file != '.' && $file != '..' && $file != '.svn' && $file != 'index.htm' && is_file(ROOT_PATH .'temp/backup/library/' . $file) == true)
+            $code = substr($file, 0, strpos($file, '-'));
+            if (!in_array($code, $available_code))
             {
-                $code = substr($file, 0, strpos($file, '-'));
-                if (!in_array($code, $available_code))
-                {
-                    @unlink(ROOT_PATH . 'temp/backup/library/' . $file);
-                }
+                @unlink(ROOT_PATH . 'temp/backup/library/' . $file);
             }
         }
     }

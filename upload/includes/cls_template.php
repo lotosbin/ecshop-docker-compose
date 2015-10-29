@@ -284,7 +284,7 @@ class cls_template
         {
             $source = $this->smarty_prefilter_preCompile($source);
         }
-        $source=preg_replace_callback("/([^a-zA-Z0-9_]{1,1})+(copy|fputs|fopen|file_put_contents|fwrite|eval|phpinfo)+( |\()/is", function($r){return "";}, $source);
+        $source=preg_replace("/([^a-zA-Z0-9_]{1,1})+(copy|fputs|fopen|file_put_contents|fwrite|eval|phpinfo)+( |\()/is", "", $source);
         if(preg_match_all('~(<\?(?:\w+|=)?|\?>|language\s*=\s*[\"\']?php[\"\']?)~is', $source, $sp_match))
         {
             $sp_match[1] = array_unique($sp_match[1]);
@@ -297,7 +297,7 @@ class cls_template
                  $source= str_replace('%%%SMARTYSP'.$curr_sp.'%%%', '<?php echo \''.str_replace("'", "\'", $sp_match[1][$curr_sp]).'\'; ?>'."\n", $source);
             }
          }
-         return preg_replace_callback("/{([^\}\{\n]*)}/",function($r){return $this->select($r[1]);}, $source);
+         return preg_replace("/{([^\}\{\n]*)}/e", "\$this->select('\\1');", $source);
     }
 
     /**
@@ -419,8 +419,7 @@ class cls_template
         }
         else
         {
-            $tag_arr = explode(' ',$tag);
-            $tag_sel = array_shift($tag_arr);
+            $tag_sel = array_shift(explode(' ', $tag));
             switch ($tag_sel)
             {
                 case 'if':
@@ -491,7 +490,7 @@ class cls_template
                 case 'insert' :
                     $t = $this->get_para(substr($tag, 7), false);
 
-                    $out = "<?php \n" . '$k = ' . preg_replace_callback("/(\'\\$[^,]+)/" ,function($r){return stripslashes(trim($r[1],'\''));}, var_export($t, true)) . ";\n";
+                    $out = "<?php \n" . '$k = ' . preg_replace("/(\'\\$[^,]+)/e" , "stripslashes(trim('\\1','\''));", var_export($t, true)) . ";\n";
                     $out .= 'echo $this->_echash . $k[\'name\'] . \'|\' . serialize($k) . $this->_echash;' . "\n?>";
 
                     return $out;
@@ -550,7 +549,7 @@ class cls_template
     {
         if (strrpos($val, '[') !== false)
         {
-            $val = preg_replace_callback("/\[([^\[\]]*)\]/is", function($r){return '.'.str_replace('$','\$',$r[1]);}, $val);
+            $val = preg_replace("/\[([^\[\]]*)\]/eis", "'.'.str_replace('$','\$','\\1')", $val);
         }
 
         if (strrpos($val, '|') !== false)
@@ -1067,9 +1066,9 @@ class cls_template
         if ($file_type == '.dwt')
         {
             /* 将模板中所有library替换为链接 */
-            $pattern     = '/<!--\s#BeginLibraryItem\s\"\/(.*?)\"\s-->.*?<!--\s#EndLibraryItem\s-->/s';
+            $pattern     = '/<!--\s#BeginLibraryItem\s\"\/(.*?)\"\s-->.*?<!--\s#EndLibraryItem\s-->/se';
             $replacement = "'{include file='.strtolower('\\1'). '}'";
-            $source      = preg_replace_callback($pattern,function($r){return "'{include file='.strtolower('" . $r[1] . "'). '}'";}, $source);
+            $source      = preg_replace($pattern, $replacement, $source);
 
             /* 检查有无动态库文件，如果有为其赋值 */
             $dyna_libs = get_dyna_libs($GLOBALS['_CFG']['template'], $this->_current_file);
@@ -1092,25 +1091,25 @@ class cls_template
                         $lib_pattern = '/{include\sfile=(' . substr($lib_pattern, 1) . ')}/';
                         /* 修改$reg_content中的内容 */
                         $GLOBALS['libs'] = $libs;
-                        $reg_content = preg_replace_callback($lib_pattern, function($r){return dyna_libs_replace($r);}, $reg_content);
+                        $reg_content = preg_replace_callback($lib_pattern, 'dyna_libs_replace', $reg_content);
 
                         /* 用修改过的内容替换原来当前区域中内容 */
-                        $source = preg_replace_callback($pattern, function($r){return $reg_content;}, $source);
+                        $source = preg_replace($pattern, $reg_content, $source);
                     }
                 }
             }
 
             /* 在头部加入版本信息 */
-            $source = preg_replace_callback('/<head>/i', function($r){return "<head>\r\n<meta name=\"Generator\" content=\"" . APPNAME .' ' . VERSION . "\" />";},  $source);
+            $source = preg_replace('/<head>/i', "<head>\r\n<meta name=\"Generator\" content=\"" . APPNAME .' ' . VERSION . "\" />",  $source);
 
             /* 修正css路径 */
-            $source = preg_replace_callback('/(<link\shref=["|\'])(?:\.\/|\.\.\/)?(css\/)?([a-z0-9A-Z_]+\.css["|\']\srel=["|\']stylesheet["|\']\stype=["|\']text\/css["|\'])/i',function($r){return $r[1] . $tmp_dir . $r[2] . $r[3];}, $source);
+            $source = preg_replace('/(<link\shref=["|\'])(?:\.\/|\.\.\/)?(css\/)?([a-z0-9A-Z_]+\.css["|\']\srel=["|\']stylesheet["|\']\stype=["|\']text\/css["|\'])/i','\1' . $tmp_dir . '\2\3', $source);
 
             /* 修正js目录下js的路径 */
-            $source = preg_replace_callback('/(<script\s(?:type|language)=["|\']text\/javascript["|\']\ssrc=["|\'])(?:\.\/|\.\.\/)?(js\/[a-z0-9A-Z_\-\.]+\.(?:js|vbs)["|\']><\/script>)/',function($r){return  $r[1] . $tmp_dir . $r[2];}, $source);
+            $source = preg_replace('/(<script\s(?:type|language)=["|\']text\/javascript["|\']\ssrc=["|\'])(?:\.\/|\.\.\/)?(js\/[a-z0-9A-Z_\-\.]+\.(?:js|vbs)["|\']><\/script>)/', '\1' . $tmp_dir . '\2', $source);
 
             /* 更换编译模板的编码类型 */
-            $source = preg_replace_callback('/<meta\shttp-equiv=["|\']Content-Type["|\']\scontent=["|\']text\/html;\scharset=(?:.*?)["|\'][^>]*?>\r?\n?/i', function($r){return '<meta http-equiv="Content-Type" content="text/html; charset=' . EC_CHARSET . '" />' . "\n";}, $source);
+            $source = preg_replace('/<meta\shttp-equiv=["|\']Content-Type["|\']\scontent=["|\']text\/html;\scharset=(?:.*?)["|\'][^>]*?>\r?\n?/i', '<meta http-equiv="Content-Type" content="text/html; charset=' . EC_CHARSET . '" />' . "\n", $source);
 
         }
 
@@ -1120,7 +1119,7 @@ class cls_template
          elseif ($file_type == '.lbi')
          {
             /* 去除meta */
-            $source = preg_replace_callback('/<meta\shttp-equiv=["|\']Content-Type["|\']\scontent=["|\']text\/html;\scharset=(?:.*?)["|\']>\r?\n?/i',function($r){return '';}, $source);
+            $source = preg_replace('/<meta\shttp-equiv=["|\']Content-Type["|\']\scontent=["|\']text\/html;\scharset=(?:.*?)["|\']>\r?\n?/i', '', $source);
          }
 
         /* 替换文件编码头部 */
@@ -1145,14 +1144,7 @@ class cls_template
             '\1' . $tmp_dir . '\2',
             '\1'
             );
-        $rr = $source;
-        $rr = preg_replace_callback($pattern[0],function($r){return $r[1];},$rr);
-        $rr = preg_replace_callback($pattern[1],function($r){return '';},$rr);
-        $rr = preg_replace_callback($pattern[2],function($r){return $r[1] . $r[2] . $r[3];},$rr);
-        $rr = preg_replace_callback($pattern[3],function($r){return $r[1] . $tmp_dir . $r[2];},$rr);
-        $rr = preg_replace_callback($pattern[4],function($r){return $r[1] . $tmp_dir . $r[2];},$rr);
-        $rr = preg_replace_callback($pattern[5],function($r){return $r[1];},$rr);
-        return $rr;
+        return preg_replace($pattern, $replace, $source);
     }
 
     function insert_mod($name) // 处理动态内容

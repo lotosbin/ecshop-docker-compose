@@ -75,19 +75,7 @@ class captcha
      * @var integer $height
      */
     var $height     = 20;
-    /**
-     * 构造函数
-     *
 
-     * @access  public
-     * @param
-     *
-     * @return void
-     */
-    function __construct($folder = '', $width = 145, $height = 20)
-    {
-        $this->captcha($folder, $width, $height);
-    }
     /**
      * 构造函数
      *
@@ -120,7 +108,18 @@ class captcha
         }
     }
 
-
+    /**
+     * 构造函数
+     *
+     * @access  public
+     * @param
+     *
+     * @return void
+     */
+    function __construct($folder = '', $width = 145, $height = 20)
+    {
+        $this->captcha($folder, $width, $height);
+    }
 
 
     /**

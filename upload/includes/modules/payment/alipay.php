@@ -78,15 +78,14 @@ class alipay
      *
      * @return void
      */
+    function alipay()
+    {
+    }
 
     function __construct()
     {
         $this->alipay();
     }
-    function alipay()
-    {
-    }
-
 
     /**
      * 生成支付代码

@@ -72,15 +72,14 @@ class balance
      *
      * @return void
      */
-    function __construct()
-    {
-        $this->balance();
-    }
     function balance()
     {
     }
 
-
+    function __construct()
+    {
+        $this->balance();
+    }
 
     /**
      * 提交函数

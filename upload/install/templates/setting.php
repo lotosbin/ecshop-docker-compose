@@ -54,7 +54,7 @@ function setting_ui_api(result)
     f["js-admin-password"].onblur = function  () {
             var password = f['js-admin-password'].value;
             var confirm_password = f['js-admin-password2'].value;
-            if (false)
+            if (!(password.length >= 8 && /\d+/.test(password) && /[a-zA-Z]+/.test(password)))
             {
                 $("js-install-at-once").setAttribute("disabled", "true");
                 if (!(password.length >= 8)){
@@ -86,7 +86,7 @@ function setting_ui_api(result)
     f["js-admin-password2"].onblur = function  () {
         var password = f['js-admin-password'].value;
         var confirm_password = f['js-admin-password2'].value;
-        if (false)
+        if (!(confirm_password.length >= 8 && /\d+/.test(confirm_password) && /[a-zA-Z]+/.test(confirm_password) && password==confirm_password))
         {
           $("js-install-at-once").setAttribute("disabled", "true");
             

@@ -142,7 +142,7 @@ class integrate
      *
      * @return void
      */
-    function login($username, $password)
+    function login($username, $password, $remember = null)
     {
         if ($this->check_user($username, $password) > 0)
         {
@@ -562,7 +562,7 @@ class integrate
      *
      * @return void
      */
-    public function set_cookie($username='')
+    function set_cookie($username='', $remember= null )
     {
         if (empty($username))
         {

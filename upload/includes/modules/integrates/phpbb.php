@@ -52,6 +52,11 @@ class phpbb extends integrate
 {
     var $cookie_prefix = '';
 
+    function __construct($cfg)
+    {
+        $this->phpbb($cfg);
+    }
+
     /**
      *
      *
@@ -102,7 +107,7 @@ class phpbb extends integrate
      *
      * @return void
      */
-    function set_cookie($username="")
+    function set_cookie ($username="")
     {
         parent::set_cookie($username);
         if (empty($username))
